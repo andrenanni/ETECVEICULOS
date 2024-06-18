@@ -1,0 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
+namespace EtecVeiculos.Api.Models;
+public class Marca
+{
+    [Key]
+    public int MarcaId { get; set; }
+
+    [Required]
+    [StringLength(30)]
+    [Display(Name = "Nome")]
+    public string Name { get; set; }
+}

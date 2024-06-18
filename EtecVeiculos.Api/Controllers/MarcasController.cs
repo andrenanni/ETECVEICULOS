@@ -1,7 +1,6 @@
 using EtecVeiculos.Api.Data;
 using EtecVeiculos.Api.DTOs;
 using EtecVeiculos.Api.Models;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,49 +8,49 @@ namespace EtecVeiculos.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
-public class TipoVeiculosController : ControllerBase
+public class MarcasController : ControllerBase
 {
     private readonly AppDbContext _context;
 
-    public TipoVeiculosController(AppDbContext context)
+    public MarcasController(AppDbContext context)
     {
-        _context = context; 
+        _context = context;
     }
 
     [HttpGet]
-    public async Task<ActionResult<List<TipoVeiculo>>> Get()
+    public async Task<ActionResult<List<Marca>>> Get()
     {
-        var tipos = await _context.TipoVeiculos.ToListAsync();
-        return Ok(tipos);
+        var marcas = await _context.Marcas.ToListAsync();
+        return Ok(marcas);
     }
 
     [HttpGet("{id}")]
     [ProducesResponseType(200)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-    public async Task<ActionResult<TipoVeiculo>> Get(int id)
+    public async Task<ActionResult<Marca>> Get(int id)
     {
-        var tipo = await _context.TipoVeiculos.FindAsync(id);
-        if (tipo == null)
-            return NotFound("Tipo de veículos não localizado");
-        return Ok(tipo);
+        var marca = await _context.Marcas.FindAsync(id);
+        if (marca == null)
+            return NotFound("Marca não localizado");
+        return Ok(marca);
     }
 
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
 
-    public async Task<ActionResult> Create(TipoVeiculoVM tipoVeiculoVM)
+    public async Task<ActionResult> Create(MarcaVM marcaVM)
     {
         if (ModelState.IsValid)
         {
-            TipoVeiculo tipoVeiculo = new()
+            Marca marca = new()
             {
-                Name = tipoVeiculoVM.Name
+                Name = marcaVM.Name
             };
-            await _context.AddAsync(tipoVeiculo);
+            await _context.AddAsync(marca);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = tipoVeiculo.Id });
+            return CreatedAtAction(nameof(Get), new { id = marca.MarcaId });
         }
         return BadRequest("Verifique os dados informados");
     }
@@ -61,19 +60,19 @@ public class TipoVeiculosController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
 
-    public async Task<ActionResult> Edit(int id, TipoVeiculo tipoVeiculo)
+    public async Task<ActionResult> Edit(int id, Marca marca)
     {
         if (ModelState.IsValid)
         {
             try
             {
-                if (!_context.TipoVeiculos.Any(q => q.Id == id))
-                    return NotFound("Tipo de Veículo não encontrado!");
+                if (!_context.Marcas.Any(q => q.MarcaId == id))
+                    return NotFound("Marca não encontrada!");
 
-                if (id != tipoVeiculo.Id)
+                if (id != marca.MarcaId)
                     return BadRequest("Verifique os dados informados");
 
-                _context.Entry(tipoVeiculo).State = EntityState.Modified;
+                _context.Entry(marca).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
 
                 return NoContent();
@@ -95,11 +94,11 @@ public class TipoVeiculosController : ControllerBase
     {
         try
         {
-            var tipoVeiculo = await _context.TipoVeiculos.FirstOrDefaultAsync(q => q.Id == id);
-            if (tipoVeiculo == null)
-                return NotFound("Tipo de Veículo não encontrado");
+            var marca = await _context.Marcas.FirstOrDefaultAsync(q => q.MarcaId == id);
+            if (marca == null)
+                return NotFound("Marca não encontrada");
 
-            _context.Remove(tipoVeiculo);
+            _context.Remove(marca);
             await _context.SaveChangesAsync();
 
             return NoContent();

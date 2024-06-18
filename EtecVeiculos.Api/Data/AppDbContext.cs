@@ -4,11 +4,12 @@ using Microsoft.EntityFrameworkCore;
 namespace EtecVeiculos.Api.Data;
 public class AppDbContext : DbContext
 {
-    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) 
+    public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     {
     }
 
     public DbSet<TipoVeiculo> TipoVeiculos { get; set; }
+    public DbSet<Marca> Marcas { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
